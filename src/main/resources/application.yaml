@@ -3,5 +3,5 @@ spring:
     name: meetingbot
 
 bot:
-  username: test
+  username: meetingtg_bot
   token: 123secret

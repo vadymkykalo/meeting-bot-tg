@@ -1,5 +1,6 @@
 package com.vadymkykalo.meetingbot.service.telegrambot;
 
+import com.vadymkykalo.meetingbot.service.googlecalendar.EventData;
 import com.vadymkykalo.meetingbot.service.googlecalendar.GoogleCalendarService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,7 +77,15 @@ public class FeatureMeetingBot extends TelegramLongPollingBot {
             return;
         }
         try {
-            String link = calendarService.createEventWithParticipants("Meeting", parts[3], parts[1], parts[2], new ArrayList<>(selectedUsers));
+            EventData eventData = EventData.builder()
+                    .summary("Meeting")
+                    .description(parts[3])
+                    .dateStart(parts[1])
+                    .timeStart(parts[2])
+                    .attendeesEmails(new ArrayList<>(selectedUsers))
+                    .build();
+
+            String link = calendarService.createEventWithParticipants(eventData);
             sendMessage(chatId, "The meeting is scheduled! Google Meet link: " + link);
             scheduleReminder(chatId, parts[1] + " " + parts[2], link, selectedUsers);
             selectedUsers.clear();

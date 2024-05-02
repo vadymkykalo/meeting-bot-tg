@@ -24,28 +24,23 @@ public class GoogleCalendarServiceImpl implements GoogleCalendarService {
 
     private static final String APPLICATION_NAME = "Telegram Bot Google Meet Integration";
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+
     private static final GsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
     @NotNull
     @Override
-    public String createEventWithParticipants(
-            String summary,
-            String description,
-            String dateStart,
-            String timeStart,
-            List<String> attendeesEmails
-    ) throws GeneralSecurityException, IOException {
+    public String createEventWithParticipants(@NotNull EventData eventData) throws GeneralSecurityException, IOException {
         Calendar service = getCalendarService();
 
         Event event = new Event()
-                .setSummary(summary)
-                .setDescription(description);
+                .setSummary(eventData.getSummary())
+                .setDescription(eventData.getDescription());
 
-        DateTime startDateTime = new DateTime(dateStart + "T" + timeStart + ":00+02:00");
+        DateTime startDateTime = new DateTime(eventData.getDateStart() + "T" + eventData.getTimeStart() + ":00+02:00");
         event.setStart(new EventDateTime().setDateTime(startDateTime));
         event.setEnd(new EventDateTime().setDateTime(startDateTime));
 
-        List<EventAttendee> attendees = attendeesEmails.stream()
+        List<EventAttendee> attendees = eventData.getAttendeesEmails().stream()
                 .map(email -> new EventAttendee().setEmail(email))
                 .collect(Collectors.toList());
         event.setAttendees(attendees);
@@ -56,7 +51,8 @@ public class GoogleCalendarServiceImpl implements GoogleCalendarService {
     }
 
     private Calendar getCalendarService() throws GeneralSecurityException, IOException {
-        GoogleCredential credential = GoogleCredential.fromStream(new FileInputStream(CREDENTIALS_FILE_PATH))
+        GoogleCredential credential = GoogleCredential
+                .fromStream(new FileInputStream(CREDENTIALS_FILE_PATH))
                 .createScoped(List.of("https://www.googleapis.com/auth/calendar"));
 
         return new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, credential)
