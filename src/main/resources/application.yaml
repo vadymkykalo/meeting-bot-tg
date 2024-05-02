@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: meetingbot
+
+bot:
+  username: test
+  token: 123secret
