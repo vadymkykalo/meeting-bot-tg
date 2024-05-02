@@ -2,6 +2,7 @@ package com.vadymkykalo.meetingbot.service.telegrambot;
 
 import com.vadymkykalo.meetingbot.service.googlecalendar.EventData;
 import com.vadymkykalo.meetingbot.service.googlecalendar.GoogleCalendarService;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,11 @@ public class FeatureMeetingBot extends TelegramLongPollingBot {
 
     @Value("${bot.token}")
     private String botToken;
+
+    @PostConstruct
+    void init() {
+        log.info("Initializing FeatureMeetingBot");
+    }
 
     @Autowired
     private GoogleCalendarService calendarService;
@@ -90,6 +96,7 @@ public class FeatureMeetingBot extends TelegramLongPollingBot {
             scheduleReminder(chatId, parts[1] + " " + parts[2], link, selectedUsers);
             selectedUsers.clear();
         } catch (Exception e) {
+            log.error(e.getMessage());
             sendMessage(chatId, "Error creating a meeting: " + e.getMessage());
         }
     }

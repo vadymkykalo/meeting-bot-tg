@@ -2,6 +2,17 @@ spring:
   application:
     name: meetingbot
 
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    org:
+      springframework:
+        web: DEBUG
+
 bot:
   username: meetingtg_bot
-  token: 123secret
+  token: test
+
