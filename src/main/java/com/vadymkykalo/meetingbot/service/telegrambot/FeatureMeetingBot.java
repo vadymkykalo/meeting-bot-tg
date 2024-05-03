@@ -2,11 +2,10 @@ package com.vadymkykalo.meetingbot.service.telegrambot;
 
 import com.vadymkykalo.meetingbot.service.googlecalendar.EventData;
 import com.vadymkykalo.meetingbot.service.googlecalendar.GoogleCalendarService;
-import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -26,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class FeatureMeetingBot extends TelegramLongPollingBot {
 
     @Value("${bot.username}")
@@ -34,16 +34,8 @@ public class FeatureMeetingBot extends TelegramLongPollingBot {
     @Value("${bot.token}")
     private String botToken;
 
-    @PostConstruct
-    void init() {
-        log.info("Initializing FeatureMeetingBot");
-    }
-
-    @Autowired
-    private GoogleCalendarService calendarService;
-
-    @Autowired
-    private TaskScheduler taskScheduler;
+    private final GoogleCalendarService calendarService;
+    private final TaskScheduler taskScheduler;
 
     private final Set<String> selectedUsers = new HashSet<>();
 

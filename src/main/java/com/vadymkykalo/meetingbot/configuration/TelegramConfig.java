@@ -12,15 +12,15 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class TelegramConfig {
 
     @Bean
-    public TelegramBotsApi telegramBotsApi() {
+    public TelegramBotsApi telegramBotsApi(FeatureMeetingBot bot) {
         try {
             TelegramBotsApi api = new TelegramBotsApi(DefaultBotSession.class);
-            api.registerBot(new FeatureMeetingBot());
+            api.registerBot(bot);
             return api;
         } catch (Exception e) {
             log.error("Failed to register bot", e);
             throw new RuntimeException("Failed to register bot", e);
         }
     }
-
 }
+

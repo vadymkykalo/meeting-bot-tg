@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class GoogleCalendarServiceImpl implements GoogleCalendarService {
 
-    @Autowired
-    private Calendar calendarService;
+    private final Calendar calendarService;
 
     @NotNull
     @Override

@@ -14,5 +14,5 @@ logging:
 
 bot:
   username: meetingtg_bot
-  token: test
+  token:
 
