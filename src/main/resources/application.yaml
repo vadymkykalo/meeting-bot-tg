@@ -8,11 +8,10 @@ server:
 logging:
   level:
     root: INFO
-    org:
-      springframework:
-        web: DEBUG
+    com.vadymkykalo: DEBUG
 
 bot:
   username: meetingtg_bot
   token:
+  attendees:
 
