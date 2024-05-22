@@ -33,6 +33,11 @@ build/
 .vscode/
 
 .env.dist
-/tmp
-/tmp/tokens
-tmp/credentials.json
+# Token storage
+/tmp/tokens/*
+/tmp/credentials.json
+/.env
+
+# Allow .gitkeep
+!/tmp/tokens/.gitkeep
+
