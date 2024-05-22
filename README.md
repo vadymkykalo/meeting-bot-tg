@@ -12,14 +12,14 @@ these links back to the user in the chat.
 - Custom annotation `@BotCommandMapping` for linking commands to their handlers.
 
 ## Prerequisites
-- Java 8 or higher
+- Java 17
 - Maven
 - A Google Cloud Project with the Calendar API enabled
 - Telegram Bot Token
 
 ## Dependencies
 - Spring Boot
-- Spring Web
+- Spring Web (optional)
 - Lombok
 - Google API Client
 - TelegramBots
