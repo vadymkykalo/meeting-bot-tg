@@ -3,6 +3,7 @@ package com.vadymkykalo.meetingbot.service.googlecalendar;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.*;
+import com.vadymkykalo.meetingbot.util.EmailValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,8 +23,16 @@ public class GoogleCalendarServiceImpl implements GoogleCalendarService {
 
     @Value("#{'${bot.attendees:}'.split(',')}")
     private List<String> attendeesEmails;
-
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
+    @Value("${meeting.start-offset-minutes:5}")
+    private int startOffsetMinutes;
+    @Value("${meeting.duration-minutes:60}")
+    private int durationMinutes;
+    @Value("${meeting.timezone:Europe/Kiev}")
+    private String timeZone;
+    @Value("${meeting.summary:Google Meet}")
+    private String summary;
+    @Value("${meeting.description:Google Meet}")
+    private String description;
 
     public String createGoogleMeetLink() throws IOException {
 
@@ -32,23 +40,23 @@ public class GoogleCalendarServiceImpl implements GoogleCalendarService {
                 .filter(emails -> emails.stream().anyMatch(email -> !email.trim().isEmpty()))
                 .orElse(Collections.emptyList());
 
-        long startTimeMillis = System.currentTimeMillis() + 5 * 60 * 1000;
+        long startTimeMillis = System.currentTimeMillis() + (long) startOffsetMinutes * 60 * 1000;
         DateTime startDateTime = new DateTime(startTimeMillis);
 
-        long endTimeMillis = startTimeMillis + 60 * 60 * 1000;
+        long endTimeMillis = startTimeMillis + (long) durationMinutes * 60 * 1000;
         DateTime endDateTime = new DateTime(endTimeMillis);
 
         List<EventAttendee> attendees = attendeesEmails.stream()
                 .map(String::trim)
-                .filter(this::isValidEmail)
+                .filter(EmailValidator::isValidEmail)
                 .map(email -> new EventAttendee().setEmail(email))
                 .collect(Collectors.toList());
 
         Event event = new Event()
-                .setSummary("Google Meet M4Y IT")
-                .setDescription("A chance to POBALAKATY with friends")
-                .setStart(new EventDateTime().setDateTime(startDateTime).setTimeZone("Europe/Kiev"))
-                .setEnd(new EventDateTime().setDateTime(endDateTime).setTimeZone("Europe/Kiev"))
+                .setSummary(summary)
+                .setDescription(description)
+                .setStart(new EventDateTime().setDateTime(startDateTime).setTimeZone(timeZone))
+                .setEnd(new EventDateTime().setDateTime(endDateTime).setTimeZone(timeZone))
                 .setVisibility("public")
                 .setAttendees(attendees)
                 .setGuestsCanInviteOthers(true)
@@ -76,10 +84,7 @@ public class GoogleCalendarServiceImpl implements GoogleCalendarService {
                 }
             }
         }
-        return "No Google Meet link available";
-    }
 
-    private boolean isValidEmail(String email) {
-        return EMAIL_PATTERN.matcher(email).matches();
+        return "No Google Meet link available";
     }
 }

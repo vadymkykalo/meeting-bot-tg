@@ -15,3 +15,20 @@ bot:
   token:
   attendees:
 
+meeting:
+  start-offset-minutes: 5
+  duration-minutes: 60
+  timezone: Europe/Kiev
+  summary: "Google Meet Default Summary"
+  description: "Google Meet Default Description"
+  messages:
+    success: "Link Google Meet:"
+    error: "Sorry, there was an error creating the Google Meet link. Please try again later."
+
+google:
+  calendar:
+    application-name: Google Meet M4Y IT
+    tokens-directory: tmp/tokens
+    credentials-file: tmp/credentials.json
+    callback-path: /oauth2callback
+    port: 8080
