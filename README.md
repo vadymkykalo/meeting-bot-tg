@@ -25,6 +25,47 @@ these links back to the user in the chat.
 - Google API Client
 - TelegramBots
 
+## Environment Configuration
+
+### Create `.env` File
+
+To configure the bot, you need to create a `.env` file in the root directory of your project.
+This file will hold all the necessary environment variables. The `.env` file is included in `.gitignore` to ensure
+sensitive information does not get pushed to version control.
+
+### Example `.env` File
+
+Here is an example of what your `.env` file should look like:
+
+```env
+BOT_USERNAME=
+BOT_TOKEN=
+BOT_ATTENDEES=test1@gmail.com,test2@gmail.com
+BOT_ALLOWED_CHATS=
+BOT_ALLOW_ALL_CHATS=true
+
+MEETING_START_OFFSET_MINUTES=5
+MEETING_DURATION_MINUTES=60
+MEETING_TIMEZONE=Europe/Kiev
+MEETING_SUMMARY=Your Meeting Summary
+MEETING_DESCRIPTION=Your Meeting Description
+MEETING_MESSAGE_SUCCESS=Your Success Message
+MEETING_MESSAGE_ERROR=Your Error Message
+
+GOOGLE_CALENDAR_APP_NAME=Your App Name
+GOOGLE_TOKENS_DIRECTORY=tmp/tokens
+GOOGLE_CREDENTIALS_FILE=tmp/credentials.json
+GOOGLE_CALLBACK_PATH=/oauth2callback
+GOOGLE_PORT=8080
+```
+
+### Notes
+- Ensure that the tmp/tokens directory exists and is writable, as it is used to store OAuth tokens.
+- Ensure that the tmp/credentials.json file exists and contains the correct OAuth2 credentials.
+
+By setting up the .env file correctly, you ensure that your bot and
+Google Calendar API integration have the necessary configuration to run successfully.
+
 ## Google Cloud Configuration
 
 ### Enable Google Calendar API
