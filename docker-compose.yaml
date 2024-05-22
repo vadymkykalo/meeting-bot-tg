@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  meetingbot:
+    build: .
+    container_name: meetingbot
+    env_file:
+      - .env
+    volumes:
+      - ./tmp:/app/tmp
+    ports:
+      - "8080:8080"
