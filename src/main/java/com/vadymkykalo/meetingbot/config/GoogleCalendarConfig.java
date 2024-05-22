@@ -25,8 +25,8 @@ public class GoogleCalendarConfig {
 
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
-    private static final String TOKENS_DIRECTORY_PATH = "/tmp/tokens";
-    private static final String CREDENTIALS_FILE_PATH = "/tmp/credentials.json";
+    private static final String TOKENS_DIRECTORY_PATH = "tmp/tokens";
+    private static final String CREDENTIALS_FILE_PATH = "tmp/credentials.json";
 
     @Bean
     public Calendar calendarService() throws GeneralSecurityException, IOException {

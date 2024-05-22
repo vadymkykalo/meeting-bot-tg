@@ -1,4 +1,4 @@
-package com.vadymkykalo.meetingbot.service;
+package com.vadymkykalo.meetingbot.service.googlecalendar;
 
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
@@ -8,21 +8,29 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class GoogleCalendarService {
+public class GoogleCalendarServiceImpl implements GoogleCalendarService {
 
     private final Calendar calendar;
 
-    @Value("#{'${bot.attendees}'.split(',')}")
+    @Value("#{'${bot.attendees:}'.split(',')}")
     private List<String> attendeesEmails;
 
-    public String createGoogleMeetLink() throws IOException, GeneralSecurityException {
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
+
+    public String createGoogleMeetLink() throws IOException {
+
+        attendeesEmails = Optional.ofNullable(attendeesEmails)
+                .filter(emails -> emails.stream().anyMatch(email -> !email.trim().isEmpty()))
+                .orElse(Collections.emptyList());
 
         long startTimeMillis = System.currentTimeMillis() + 5 * 60 * 1000;
         DateTime startDateTime = new DateTime(startTimeMillis);
@@ -31,7 +39,9 @@ public class GoogleCalendarService {
         DateTime endDateTime = new DateTime(endTimeMillis);
 
         List<EventAttendee> attendees = attendeesEmails.stream()
-                .map(email -> new EventAttendee().setEmail(email.trim()))
+                .map(String::trim)
+                .filter(this::isValidEmail)
+                .map(email -> new EventAttendee().setEmail(email))
                 .collect(Collectors.toList());
 
         Event event = new Event()
@@ -67,5 +77,9 @@ public class GoogleCalendarService {
             }
         }
         return "No Google Meet link available";
+    }
+
+    private boolean isValidEmail(String email) {
+        return EMAIL_PATTERN.matcher(email).matches();
     }
 }
