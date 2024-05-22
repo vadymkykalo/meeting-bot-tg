@@ -1,5 +1,4 @@
-# Google Meet Link Telegram Bot 
-# meeting-bot-tg
+# Google Meet Link Telegram Bot
 
 ## Overview
 This Telegram bot allows users to generate Google Meet links directly from a Telegram chat.
@@ -22,8 +21,6 @@ these links back to the user in the chat.
 ## Dependencies
 - Spring Boot
 - Spring Web
-- Spring Boot Starter Security
-- Spring Boot Starter Data JPA
 - Lombok
 - Google API Client
 - TelegramBots
