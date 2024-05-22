@@ -29,35 +29,20 @@ these links back to the user in the chat.
 
 ### Create `.env` File
 
-To configure the bot, you need to create a `.env` file in the root directory of your project.
-This file will hold all the necessary environment variables. The `.env` file is included in `.gitignore` to ensure
-sensitive information does not get pushed to version control.
+Before starting the application, make sure you have a `.env` file in the root directory of your project. This file should hold all the necessary environment variables. You can use the provided `setup.sh` script to create the `.env` file from the `.env.dist` template.
 
-### Example `.env` File
+### Steps
 
-Here is an example of what your `.env` file should look like:
+1. Ensure you have the `.env.dist` file in the root directory of your project. This file contains example environment variables.
+2. Run the setup script:
 
-```env
-BOT_USERNAME=
-BOT_TOKEN=
-BOT_ATTENDEES=test1@gmail.com,test2@gmail.com
-BOT_ALLOWED_CHATS=
-BOT_ALLOW_ALL_CHATS=true
+    ```bash
+    chmod +x setup.sh
+    ./setup.sh add-env
+    ```
 
-MEETING_START_OFFSET_MINUTES=5
-MEETING_DURATION_MINUTES=60
-MEETING_TIMEZONE=Europe/Kiev
-MEETING_SUMMARY=Your Meeting Summary
-MEETING_DESCRIPTION=Your Meeting Description
-MEETING_MESSAGE_SUCCESS=Your Success Message
-MEETING_MESSAGE_ERROR=Your Error Message
+   The script will check for the existence of the `.env` file and create it if it does not exist, using the values from `.env.dist`.
 
-GOOGLE_CALENDAR_APP_NAME=Your App Name
-GOOGLE_TOKENS_DIRECTORY=tmp/tokens
-GOOGLE_CREDENTIALS_FILE=tmp/credentials.json
-GOOGLE_CALLBACK_PATH=/oauth2callback
-GOOGLE_PORT=8080
-```
 
 ### Notes
 - Ensure that the tmp/tokens directory exists and is writable, as it is used to store OAuth tokens.
