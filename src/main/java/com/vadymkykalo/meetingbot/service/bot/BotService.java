@@ -8,6 +8,8 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -20,6 +22,12 @@ public class BotService extends TelegramLongPollingBot {
 
     @Value("${bot.token}")
     private String botToken;
+
+    @Value("#{'${bot.allowed-chats}'.split(',')}")
+    private List<String> allowedChats;
+
+    @Value("${bot.allow-all-chats}")
+    private boolean allowAllChats;
 
     private final Map<String, BotCommand> commandMap;
 
@@ -36,20 +44,36 @@ public class BotService extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-
+            long chatId = update.getMessage().getChatId();
             String messageText = update.getMessage().getText().trim().toLowerCase();
 
-            BotCommand command = commandMap.get(messageText);
-            if (null != command) {
-                SendMessage message = command.execute(update);
-                try {
-                    execute(message);
-                } catch (TelegramApiException e) {
-                    log.error("Error sending message to chat ID: {}", message.getChatId(), e);
+            if (isChatAllowed(chatId)) {
+                log.info("Received message: {} from chat ID: {}", messageText, chatId);
+
+                BotCommand command = commandMap.get(messageText);
+                if (null != command) {
+                    SendMessage message = command.execute(update);
+                    try {
+                        execute(message);
+                    } catch (TelegramApiException e) {
+                        log.error("Error sending message to chat ID: {}", message.getChatId(), e);
+                    } catch (RuntimeException e) {
+                        log.error("Unsupported Error to chat ID: {}", message.getChatId(), e);
+                    }
+                } else {
+                    log.info("Unsupported command: {} from chat ID: {}", messageText, chatId);
                 }
             } else {
-                log.info("Unsupported command: {} from chat ID: {}", messageText, update.getMessage().getChatId());
+                log.info("Chat ID: {} is not allowed to interact with this bot", chatId);
             }
+        }
+    }
+
+    private boolean isChatAllowed(long chatId) {
+        if (allowAllChats) {
+            return true;
+        } else {
+            return allowedChats.contains(String.valueOf(chatId));
         }
     }
 }
