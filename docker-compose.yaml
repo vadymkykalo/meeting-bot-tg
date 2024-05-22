@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   meetingbot:
+    restart: on-failure
     build: .
     container_name: meetingbot
     env_file:
