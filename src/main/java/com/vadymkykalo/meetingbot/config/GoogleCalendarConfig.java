@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Configuration
 @RequiredArgsConstructor
@@ -48,6 +50,11 @@ public class GoogleCalendarConfig {
         return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(applicationName)
                 .build();
+    }
+
+    @Bean
+    public ScheduledExecutorService scheduledExecutorService() {
+        return Executors.newScheduledThreadPool(1);
     }
 
     private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
