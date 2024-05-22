@@ -25,9 +25,8 @@ public class GoogleCalendarConfig {
 
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
-    private static final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
-    private static final String TOKENS_DIRECTORY_PATH = "tokens";
-    private static final String CREDENTIALS_FILE_PATH = "credentials.json";
+    private static final String TOKENS_DIRECTORY_PATH = "/tmp/tokens";
+    private static final String CREDENTIALS_FILE_PATH = "/tmp/credentials.json";
 
     @Bean
     public Calendar calendarService() throws GeneralSecurityException, IOException {
@@ -36,7 +35,7 @@ public class GoogleCalendarConfig {
         Credential credential = getCredentials(HTTP_TRANSPORT);
 
         return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
-                .setApplicationName(APPLICATION_NAME)
+                .setApplicationName("Google Meet M4Y IT")
                 .build();
     }
 
@@ -47,7 +46,11 @@ public class GoogleCalendarConfig {
         );
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, Collections.singletonList("https://www.googleapis.com/auth/calendar"))
+                HTTP_TRANSPORT,
+                JSON_FACTORY,
+                clientSecrets,
+                Collections.singletonList("https://www.googleapis.com/auth/calendar")
+        )
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                 .setAccessType("offline")
                 .build();

@@ -15,7 +15,7 @@ import java.security.GeneralSecurityException;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class FeatureMeetingBot extends TelegramLongPollingBot {
+public class BotService extends TelegramLongPollingBot {
 
     @Value("${bot.username}")
     private String botUsername;

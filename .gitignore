@@ -34,5 +34,5 @@ build/
 
 .env.dist
 /tmp
-/tokens
-credentials.json
+/tmp/tokens
+tmp/credentials.json

@@ -1,6 +1,6 @@
 package com.vadymkykalo.meetingbot.config;
 
-import com.vadymkykalo.meetingbot.service.FeatureMeetingBot;
+import com.vadymkykalo.meetingbot.service.BotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,12 +12,12 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @RequiredArgsConstructor
 public class BotConfig {
 
-    private final FeatureMeetingBot featureMeetingBot;
+    private final BotService botService;
 
     @Bean
     public TelegramBotsApi telegramBotsApi() throws TelegramApiException {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(featureMeetingBot);
+        telegramBotsApi.registerBot(botService);
         return telegramBotsApi;
     }
 }
