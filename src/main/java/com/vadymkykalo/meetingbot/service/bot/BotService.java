@@ -44,36 +44,34 @@ public class BotService extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
+
             long chatId = update.getMessage().getChatId();
+
             String messageText = update.getMessage().getText().trim().toLowerCase();
 
             if (isChatAllowed(chatId)) {
+
                 log.info("Received message: {} from chat ID: {}", messageText, chatId);
 
                 BotCommand command = commandMap.get(messageText);
+
                 if (null != command) {
                     SendMessage message = command.execute(update);
                     try {
                         execute(message);
                     } catch (TelegramApiException e) {
-                        log.error("Error sending message to chat ID: {}", message.getChatId(), e);
+                        log.error("Error sending message to chat ID: {}", chatId, e);
                     } catch (RuntimeException e) {
-                        log.error("Unsupported Error to chat ID: {}", message.getChatId(), e);
+                        log.error("Unsupported Error to chat ID: {}", chatId, e);
                     }
                 } else {
                     log.info("Unsupported command: {} from chat ID: {}", messageText, chatId);
                 }
-            } else {
-                log.info("Chat ID: {} is not allowed to interact with this bot", chatId);
             }
         }
     }
 
     private boolean isChatAllowed(long chatId) {
-        if (allowAllChats) {
-            return true;
-        } else {
-            return allowedChats.contains(String.valueOf(chatId));
-        }
+        return allowAllChats || allowedChats.contains(String.valueOf(chatId));
     }
 }

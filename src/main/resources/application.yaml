@@ -1,20 +1,20 @@
 spring:
   application:
-    name: meetingbot
+    name: ${SPRING_APP:MeetingBot}
 
 server:
-  port: 8080
+  port: ${SPRING_PORT:8080}
 
 logging:
   level:
-    root: INFO
-    com.vadymkykalo: DEBUG
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.vadymkykalo: ${LOGGING_LEVEL_SRC:INFO}
 
 bot:
   username: ${BOT_USERNAME:your_bot_username}
   token: ${BOT_TOKEN:your_bot_token}
-  attendees: ${BOT_ATTENDEES}
-  allowed-chats: ${BOT_ALLOWED_CHATS}
+  attendees: ${BOT_ATTENDEES:example-one@gmail.com,example-second@gmail.com}
+  allowed-chats: ${BOT_ALLOWED_CHATS:111111111}
   allow-all-chats: ${BOT_ALLOW_ALL_CHATS:true}
 
 meeting:

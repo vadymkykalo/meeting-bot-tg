@@ -107,7 +107,7 @@ public class GoogleCalendarServiceImpl implements GoogleCalendarService {
             try {
                 calendar.events().delete("primary", eventId).execute();
                 log.info("Event deleted: {}", eventId);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.error("Error deleting event: {}", eventId, e);
             }
         }, delay, TimeUnit.MILLISECONDS);
