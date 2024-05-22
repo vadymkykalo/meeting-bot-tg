@@ -11,26 +11,26 @@ logging:
     com.vadymkykalo: DEBUG
 
 bot:
-  username: meetingtg_bot
-  token:
-  attendees:
-  allowed-chats:
-  allow-all-chats: true
+  username: ${BOT_USERNAME:your_bot_username}
+  token: ${BOT_TOKEN:your_bot_token}
+  attendees: ${BOT_ATTENDEES}
+  allowed-chats: ${BOT_ALLOWED_CHATS}
+  allow-all-chats: ${BOT_ALLOW_ALL_CHATS:true}
 
 meeting:
-  start-offset-minutes: 5
-  duration-minutes: 60
-  timezone: Europe/Kiev
-  summary: "Google Meet Default Summary"
-  description: "Google Meet Default Description"
+  start-offset-minutes: ${MEETING_START_OFFSET_MINUTES:5}
+  duration-minutes: ${MEETING_DURATION_MINUTES:60}
+  timezone: ${MEETING_TIMEZONE:Europe/Kiev}
+  summary: ${MEETING_SUMMARY:Google Meet Default Summary}
+  description: ${MEETING_DESCRIPTION:Google Meet Default Description}
   messages:
-    success: "Link Google Meet:"
-    error: "Sorry, there was an error creating the Google Meet link. Please try again later."
+    success: ${MEETING_MESSAGE_SUCCESS:Link Google Meet}
+    error: ${MEETING_MESSAGE_ERROR:Sorry, there was an error creating the Google Meet link. Please try again later.}
 
 google:
   calendar:
-    application-name: Google Meet M4Y IT
-    tokens-directory: tmp/tokens
-    credentials-file: tmp/credentials.json
-    callback-path: /oauth2callback
-    port: 8080
+    application-name: ${GOOGLE_CALENDAR_APP_NAME:Google Meet IT}
+    tokens-directory: ${GOOGLE_TOKENS_DIRECTORY:tmp/tokens}
+    credentials-file: ${GOOGLE_CREDENTIALS_FILE:tmp/credentials.json}
+    callback-path: ${GOOGLE_CALLBACK_PATH:/oauth2callback}
+    port: ${GOOGLE_PORT:8080}

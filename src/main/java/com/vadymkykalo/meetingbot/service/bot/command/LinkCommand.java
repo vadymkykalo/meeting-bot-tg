@@ -32,7 +32,7 @@ public class LinkCommand implements BotCommand {
 
         try {
             String meetLink = googleCalendarService.createGoogleMeetLink();
-            message.setText(successMessage + meetLink);
+            message.setText(successMessage + ": "+ meetLink);
         } catch (Exception e) {
             log.error("Error creating Google Meet link", e);
             message.setText(errorMessage);
