@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Function to create the .env file if it doesn't exist
 add-env() {
@@ -19,3 +20,13 @@ add-env() {
   fi
 }
 
+main() {
+  if [ "$1" == "add-env" ]; then
+    add-env
+  else
+    echo "Usage: $0 {add-env}"
+  fi
+}
+
+
+main "$@"
