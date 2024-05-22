@@ -5,6 +5,7 @@ import com.vadymkykalo.meetingbot.service.bot.BotCommandMapping;
 import com.vadymkykalo.meetingbot.service.googlecalendar.GoogleCalendarService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -17,6 +18,11 @@ public class LinkCommand implements BotCommand {
 
     private final GoogleCalendarService googleCalendarService;
 
+    @Value("${meeting.messages.success}")
+    private String successMessage;
+    @Value("${meeting.messages.error}")
+    private String errorMessage;
+
     @Override
     public SendMessage execute(Update update) {
         long chatId = update.getMessage().getChatId();
@@ -26,10 +32,10 @@ public class LinkCommand implements BotCommand {
 
         try {
             String meetLink = googleCalendarService.createGoogleMeetLink();
-            message.setText("Link Google Meet: " + meetLink);
+            message.setText(successMessage + meetLink);
         } catch (Exception e) {
             log.error("Error creating Google Meet link", e);
-            message.setText("Sorry, there was an error creating the Google Meet link. Please try again later.");
+            message.setText(errorMessage);
         }
 
         return message;

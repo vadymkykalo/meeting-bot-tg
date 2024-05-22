@@ -40,7 +40,7 @@ public class BotService extends TelegramLongPollingBot {
             String messageText = update.getMessage().getText().trim().toLowerCase();
 
             BotCommand command = commandMap.get(messageText);
-            if (command != null) {
+            if (null != command) {
                 SendMessage message = command.execute(update);
                 try {
                     execute(message);
