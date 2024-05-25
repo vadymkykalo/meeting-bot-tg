@@ -1,0 +1,4 @@
+server_ip: ""
+image_dest_path: ""
+project_path: ""
+ansible_become_password: ""

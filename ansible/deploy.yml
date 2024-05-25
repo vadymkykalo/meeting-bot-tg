@@ -1,0 +1,79 @@
+- hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Ensure project directory exists locally
+      file:
+        path: "{{ project_path }}"
+        state: directory
+
+    - name: Build Docker image locally
+      command: "docker build -t meetingbot:latest ."
+      args:
+        chdir: "{{ project_path }}"
+
+    - name: Save Docker image as a tar archive locally
+      command: "docker save meetingbot:latest -o meetingbot.tar"
+      args:
+        chdir: "{{ project_path }}"
+
+    - name: Copy Docker image to the remote server
+      copy:
+        src: "{{ project_path }}/meetingbot.tar"
+        dest: "{{ image_dest_path }}"
+      delegate_to: server
+
+    - name: Remove local meetingbot.jar
+      file:
+        path: "{{ project_path }}/target/meetingbot-0.0.1-SNAPSHOT.jar"
+        state: absent
+
+    - name: Remove local Docker image
+      command: "docker rmi meetingbot:latest"
+
+- hosts: prod
+  gather_facts: no
+  vars_files:
+    - vars.yml
+  become: yes
+  become_method: sudo
+  become_user: root
+  tasks:
+    - name: Stop and remove existing Docker container if it exists
+      docker_container:
+        name: meetingbot
+        state: absent
+        force_kill: yes
+
+    - name: Remove Docker image if it exists
+      command: "docker rmi -f meetingbot:latest"
+      ignore_errors: yes
+
+    - name: Load Docker image on the remote server
+      command: "docker load -i {{ image_dest_path }}"
+
+    - name: Run Docker container
+      docker_container:
+        name: meetingbot
+        image: meetingbot:latest
+        state: started
+        restart_policy: on-failure
+        ports:
+          - "8080:8080"
+        volumes:
+          - "/tmp:/app/tmp"
+        command: "java -Dfile.encoding=UTF-8 -jar /app/meetingbot.jar"
+
+    - name: Wait for the container to start
+      pause:
+        seconds: 30
+
+    - name: Remove remote meetingbot.tar
+      file:
+        path: "{{ image_dest_path }}"
+        state: absent
+
+    - name: Remove remote Docker image
+      command: "docker rmi meetingbot:latest"
+      ignore_errors: yes

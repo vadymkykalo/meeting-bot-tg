@@ -36,6 +36,7 @@ build/
 /tmp/tokens/*
 /tmp/credentials.json
 /.env
+meetingbot.tar
 ansible/roles/deploy/files/.env
 
 # Allow .gitkeep
