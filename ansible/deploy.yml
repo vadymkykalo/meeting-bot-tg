@@ -8,6 +8,11 @@
         path: "{{ project_path }}"
         state: directory
 
+    - name: Ensure tmp directory exists locally
+      file:
+        path: "{{ project_path }}/tmp"
+        state: directory
+
     - name: Build Docker image locally
       command: "docker build -t meetingbot:latest ."
       args:
@@ -18,11 +23,29 @@
       args:
         chdir: "{{ project_path }}"
 
+    - name: Check if tar file exists on the remote server
+      stat:
+        path: "{{ image_dest_path }}"
+      delegate_to: server
+      register: tar_exists
+
+    - name: Remove old tar file on the remote server if it exists
+      file:
+        path: "{{ image_dest_path }}"
+        state: absent
+      delegate_to: server
+      when: tar_exists.stat.exists
+
     - name: Copy Docker image to the remote server
       copy:
         src: "{{ project_path }}/meetingbot.tar"
         dest: "{{ image_dest_path }}"
       delegate_to: server
+
+    - name: Remove local tar file after copying to remote server
+      file:
+        path: "{{ project_path }}/meetingbot.tar"
+        state: absent
 
     - name: Remove local meetingbot.jar
       file:
@@ -40,18 +63,22 @@
   become_method: sudo
   become_user: root
   tasks:
-    - name: Stop and remove existing Docker container if it exists
-      docker_container:
-        name: meetingbot
-        state: absent
-        force_kill: yes
+    - name: Ensure {{ dest_path }}/tmp directory exists on the remote server
+      file:
+        path: "{{ dest_path }}/tmp"
+        state: directory
 
-    - name: Remove Docker image if it exists
-      command: "docker rmi -f meetingbot:latest"
-      ignore_errors: yes
+    - name: Set permissions on the remote tmp directory
+      file:
+        path: "{{ dest_path }}/tmp"
+        state: directory
+        mode: '0777'
+        recurse: yes
 
     - name: Load Docker image on the remote server
       command: "docker load -i {{ image_dest_path }}"
+      register: docker_load_result
+      failed_when: docker_load_result.rc != 0
 
     - name: Run Docker container
       docker_container:
@@ -62,18 +89,4 @@
         ports:
           - "8080:8080"
         volumes:
-          - "/tmp:/app/tmp"
-        command: "java -Dfile.encoding=UTF-8 -jar /app/meetingbot.jar"
-
-    - name: Wait for the container to start
-      pause:
-        seconds: 30
-
-    - name: Remove remote meetingbot.tar
-      file:
-        path: "{{ image_dest_path }}"
-        state: absent
-
-    - name: Remove remote Docker image
-      command: "docker rmi meetingbot:latest"
-      ignore_errors: yes
+          - "{{ dest_path }}/tmp:/app/tmp"
