@@ -36,6 +36,7 @@ build/
 /tmp/tokens/*
 /tmp/credentials.json
 /.env
+ansible/roles/deploy/files/.env
 
 # Allow .gitkeep
 !/tmp/tokens/.gitkeep
