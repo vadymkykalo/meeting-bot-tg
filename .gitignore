@@ -38,6 +38,8 @@ build/
 /.env
 meetingbot.tar
 ansible/roles/deploy/files/.env
+ansible/inventory
+ansible/vars.yml
 
 # Allow .gitkeep
 !/tmp/tokens/.gitkeep
