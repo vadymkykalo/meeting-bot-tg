@@ -75,6 +75,12 @@
         mode: '0777'
         recurse: yes
 
+    - name: Copy local tmp directory to remote server
+      copy:
+        src: "{{ project_path }}/tmp/"
+        dest: "{{ dest_path }}/tmp/"
+        mode: '0777'
+
     - name: Load Docker image on the remote server
       command: "docker load -i {{ image_dest_path }}"
       register: docker_load_result
