@@ -1,5 +1,6 @@
 package com.vadymkykalo.meetingbot.service.bot;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +42,13 @@ public class BotService extends TelegramLongPollingBot {
         return botToken;
     }
 
+    @PostConstruct
+    void init() {
+        log.info("BotService initialized");
+        log.info("allowedChats : {}", allowedChats);
+        log.info("allowAllChats : {}", allowAllChats);
+    }
+
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
@@ -67,6 +75,8 @@ public class BotService extends TelegramLongPollingBot {
                 } else {
                     log.info("Unsupported command: {} from chat ID: {}", messageText, chatId);
                 }
+            } else {
+                log.info("Allowed chats: {} , request chat ID: {}", allowedChats, chatId);
             }
         }
     }
