@@ -146,3 +146,10 @@ and the application will proceed. From then on, it will automatically refresh th
 The bot uses the Command design pattern to handle various commands. 
 Each command is a separate class implementing the BotCommand interface. 
 Commands are linked to their handlers using the custom annotation @BotCommandMapping.
+
+
+###### Run ansible
+
+```bash
+   ansible-playbook -i inventory deploy.yml --ask-become-pass
+```
