@@ -11,9 +11,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Slf4j
-@BotCommandMapping("/link")
 @Component
 @RequiredArgsConstructor
+@BotCommandMapping("/meet")
 public class LinkCommand implements BotCommand {
 
     private final GoogleCalendarService googleCalendarService;
